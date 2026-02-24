@@ -1,3 +1,8 @@
+# Build
+*.deb
+DEBIAN/md5sums
+usr/share/doc/right-click-file/changelog.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
