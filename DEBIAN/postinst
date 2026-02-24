@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+
+LOG_DIR="/var/log/right_click_file"
+LOG_FILE="$LOG_DIR/install.log"
+DING_FILE="/usr/share/gnome-shell/extensions/ding@rastersoft.com/app/desktopManager.js"
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> "$LOG_FILE"
+    echo "[$1] $2"
+}
+
+mkdir -p "$LOG_DIR"
+chmod 755 "$LOG_DIR"
+
+{
+    echo ""
+    echo "================================================================"
+    echo "  right-click-file v1.0.0 -- postinst $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "================================================================"
+} >> "$LOG_FILE"
+
+log "INFO" "Running post-installation tasks..."
+
+if [ ! -f "$DING_FILE" ]; then
+    log "WARN" "DING not found, skipping desktop patch: $DING_FILE"
+else
+    BACKUP="${DING_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
+    cp "$DING_FILE" "$BACKUP"
+    echo "$BACKUP" > "$LOG_DIR/last_backup.txt"
+    log "INFO" "Backup saved: $BACKUP"
+
+    python3 /usr/share/right-click-file/patch-ding.py apply >> "$LOG_FILE" 2>&1 \
+        && log "OK" "DING patch applied" \
+        || log "WARN" "DING patch failed -- check $LOG_FILE"
+fi
+
+{
+    echo "DING_FILE=$DING_FILE"
+} > "$LOG_DIR/installed_files.txt"
+
+log "OK" "Post-installation complete"
+log "INFO" "A reboot is required for the desktop right-click to become active"
+echo ""
+echo "  [INFO] A reboot is required for the desktop right-click entry to appear."
+echo ""
+
+exit 0

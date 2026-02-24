@@ -1,0 +1,11 @@
+Package: right-click-file
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: zenity, xdg-utils, python3-nautilus
+Maintainer: sypher93 <sypher93@proton.me>
+Description: Adds "Create a file here..." to the GNOME right-click menu
+ Injects a context menu entry into Nautilus and the DING desktop extension
+ allowing users to create and immediately open a new file from any folder
+ or directly from the desktop.

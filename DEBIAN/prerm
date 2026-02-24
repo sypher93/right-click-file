@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+
+LOG_DIR="/var/log/right_click_file"
+LOG_FILE="$LOG_DIR/install.log"
+DING_FILE="/usr/share/gnome-shell/extensions/ding@rastersoft.com/app/desktopManager.js"
+
+log() {
+    mkdir -p "$LOG_DIR"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] $2" >> "$LOG_FILE"
+    echo "[$1] $2"
+}
+
+{
+    echo ""
+    echo "================================================================"
+    echo "  right-click-file v1.0.0 -- prerm $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "================================================================"
+} >> "$LOG_FILE"
+
+log "INFO" "Running pre-removal tasks..."
+
+if [ ! -f "$DING_FILE" ]; then
+    log "WARN" "DING not found, skipping patch removal."
+else
+    BACKUP_PATH=""
+    [ -f "$LOG_DIR/last_backup.txt" ] && BACKUP_PATH=$(cat "$LOG_DIR/last_backup.txt")
+
+    if [ -n "$BACKUP_PATH" ] && [ -f "$BACKUP_PATH" ]; then
+        cp "$BACKUP_PATH" "$DING_FILE"
+        rm -f "${DING_FILE}".backup.* "$LOG_DIR/last_backup.txt"
+        log "OK" "desktopManager.js restored from backup: $BACKUP_PATH"
+    else
+        log "WARN" "No backup found -- removing patch markers manually"
+        python3 /usr/share/right-click-file/patch-ding.py remove >> "$LOG_FILE" 2>&1 \
+            && log "OK" "DING patch removed" \
+            || log "WARN" "Could not remove DING patch -- check $LOG_FILE"
+    fi
+fi
+
+rm -f "$LOG_DIR/installed_files.txt"
+log "OK" "Pre-removal complete"
+log "INFO" "A reboot is required to fully remove the desktop right-click entry"
+echo ""
+echo "  [INFO] A reboot is required for the desktop right-click entry to disappear."
+echo ""
+
+exit 0

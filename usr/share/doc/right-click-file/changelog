@@ -1,0 +1,9 @@
+right-click-file (1.0.0) stable; urgency=low
+
+  * Initial release.
+  * Nautilus extension: right-click menu in all folders.
+  * DING patch: right-click menu on the GNOME desktop.
+  * GLib.spawn_async() used for path safety.
+  * Installation log written to /var/log/right_click_file/.
+
+ -- sypher93 <sypher93@proton.me>  Sat, 21 Feb 2026 00:00:00 +0000
