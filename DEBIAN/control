@@ -4,8 +4,23 @@ Section: utils
 Priority: optional
 Architecture: all
 Depends: zenity, xdg-utils, python3-nautilus
+Recommends: nautilus, ding-gnome-shell-extension
+Suggests: gnome-shell-extension-manager
+Installed-Size: 48
 Maintainer: sypher93 <sypher93@proton.me>
+Homepage: https://github.com/sypher93/right-click-file
+Vcs-Git: https://github.com/sypher93/right-click-file.git
+Vcs-Browser: https://github.com/sypher93/right-click-file
 Description: Adds "Create a file here..." to the GNOME right-click menu
  Injects a context menu entry into Nautilus and the DING desktop extension
  allowing users to create and immediately open a new file from any folder
  or directly from the desktop.
+ .
+ Features:
+  - Context menu entry in Nautilus file manager
+  - Context menu entry on the GNOME desktop (via DING extension)
+  - Opens the newly created file automatically in the default text editor
+  - Minimal dependencies, no background daemon required
+ .
+ This package is intended for GNOME desktop environments running Nautilus
+ as the default file manager on Debian/Ubuntu-based distributions.
