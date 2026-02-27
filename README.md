@@ -26,7 +26,7 @@ The feature adds:
 
 Download the latest `.deb` from the [releases page](https://github.com/sypher93/right-click-file/releases) or via `wget`:
 ```bash
-wget -P /tmp https://github.com/sypher/right-click-file/releases/latest/download/right-click-file_1.0.0_all.deb
+wget -P /tmp https://github.com/sypher93/right-click-file/releases/latest/download/right-click-file_1.0.0_all.deb
 ```
 > [!TIP]
 > Using `-P /tmp` downloads directly into `/tmp`, avoiding the `apt` sandbox warning in a single step.
@@ -43,12 +43,14 @@ Dependencies installed automatically: `zenity`, `xdg-utils`, `python3-nautilus`.
 
 Install:
 ```bash
-bash <(curl -fsSL https://github.com/sypher93/right-click-file/raw/main/scripts/right_click_file.sh)
+curl -fsSL https://github.com/sypher93/right-click-file/raw/main/scripts/right_click_file.sh -o right_click_file.sh
+sudo bash right_click_file.sh
 ```
 
 Uninstall:
 ```bash
-bash <(curl -fsSL https://github.com/sypher93/right-click-file/raw/main/scripts/right_click_file_uninstall.sh)
+curl -fsSL https://github.com/sypher93/right-click-file/raw/main/scripts/right_click_file_uninstall.sh -o right_click_file_uninstall.sh
+sudo bash right_click_file_uninstall.sh
 ```
 
 > [!WARNING]
