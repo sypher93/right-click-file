@@ -17,7 +17,7 @@ The feature adds:
 ## Installation
 
 ```bash
-sudo apt install ./right-click-file_1.0.0_all.deb
+sudo apt install ./right-click-file_1.x.x_all.deb
 ```
 
 Dependencies installed automatically: `zenity`, `xdg-utils`, `python3-nautilus`.

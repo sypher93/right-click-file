@@ -1,5 +1,5 @@
 Package: right-click-file
-Version: 1.0.0
+Version: 1.1.0
 Section: utils
 Priority: optional
 Architecture: all
@@ -24,3 +24,4 @@ Description: Adds "Create a file here..." to the GNOME right-click menu
  .
  This package is intended for GNOME desktop environments running Nautilus
  as the default file manager on Debian/Ubuntu-based distributions.
+ 

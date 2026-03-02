@@ -1,3 +1,19 @@
+right-click-file (1.1.0) stable; urgency=low
+
+  * apt hook: automatically re-apply the DING patch after a DING update.
+  * apt hook: notify logged-in GNOME users on patch re-application or failure.
+  * apt hook: store timestamped backups in a dedicated subdirectory.
+  * postinst: save a read-only original backup of desktopManager.js before patching.
+  * postinst: detect and clean residual patch before saving original backup.
+  * postinst: install apt hook configuration to /etc/apt/apt.conf.d/.
+  * postinst: store SHA256 hash of desktopManager.js for change detection.
+  * prerm: restore desktopManager.js from original backup as first priority.
+  * prerm: fall back to patch-ding.py remove if original backup is missing.
+  * prerm: fall back to GitLab download as last resort, version-aware.
+  * prerm: remove apt hook before any file operation to avoid race conditions.
+
+ -- sypher93 <sypher93@proton.me>  Fri, 02 Mar 2026 00:00:00 +0000
+
 right-click-file (1.0.0) stable; urgency=low
 
   * Initial release.

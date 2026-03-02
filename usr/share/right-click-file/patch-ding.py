@@ -1,3 +1,5 @@
+# right-click-file | Copyright (C) 2026 sypher93 | GPLv3
+
 import re, sys
 
 DING_FILE = "/usr/share/gnome-shell/extensions/ding@rastersoft.com/app/desktopManager.js"

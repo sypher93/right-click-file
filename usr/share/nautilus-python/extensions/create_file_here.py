@@ -1,3 +1,5 @@
+# right-click-file | Copyright (C) 2026 sypher93 | GPLv3
+
 import gi, subprocess, os
 
 for _v in ['4.0', '3.0']:

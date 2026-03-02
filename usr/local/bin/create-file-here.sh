@@ -1,4 +1,5 @@
 #!/bin/bash
+# right-click-file | Copyright (C) 2026 sypher93 | GPLv3
 
 FOLDER="${1:-}"
 [ -z "$FOLDER" ] || [ ! -d "$FOLDER" ] && FOLDER="$HOME/Desktop"
