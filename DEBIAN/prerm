@@ -1,9 +1,16 @@
 #!/bin/bash
+# right-click-file | Copyright (C) 2026 sypher93 <sypher93@proton.me> | GPLv3
 set -e
 
 LOG_DIR="/var/log/right_click_file"
 LOG_FILE="$LOG_DIR/install.log"
+STATE_DIR="/var/lib/right-click-file"
+BACKUP_DIR="$STATE_DIR/backups"
 DING_FILE="/usr/share/gnome-shell/extensions/ding@rastersoft.com/app/desktopManager.js"
+DING_META="/usr/share/gnome-shell/extensions/ding@rastersoft.com/metadata.json"
+ORIGINAL_BACKUP="$STATE_DIR/desktopManager.js.original"
+APT_HOOK_CONF="/etc/apt/apt.conf.d/99-right-click-file"
+GITLAB_RAW="https://gitlab.com/rastersoft/desktop-icons-ng/-/raw"
 
 log() {
     mkdir -p "$LOG_DIR"
@@ -14,35 +21,73 @@ log() {
 {
     echo ""
     echo "================================================================"
-    echo "  right-click-file v1.0.0 -- prerm $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "  right-click-file v1.1.0 -- prerm $(date '+%Y-%m-%d %H:%M:%S')"
     echo "================================================================"
 } >> "$LOG_FILE"
 
 log "INFO" "Running pre-removal tasks..."
 
+if [ -f "$APT_HOOK_CONF" ]; then
+    rm -f "$APT_HOOK_CONF"
+    log "OK" "apt hook removed: $APT_HOOK_CONF"
+else
+    log "INFO" "apt hook not found, skipping"
+fi
+
 if [ ! -f "$DING_FILE" ]; then
     log "WARN" "DING not found, skipping patch removal."
 else
-    BACKUP_PATH=""
-    [ -f "$LOG_DIR/last_backup.txt" ] && BACKUP_PATH=$(cat "$LOG_DIR/last_backup.txt")
 
-    if [ -n "$BACKUP_PATH" ] && [ -f "$BACKUP_PATH" ]; then
-        cp "$BACKUP_PATH" "$DING_FILE"
-        rm -f "${DING_FILE}".backup.* "$LOG_DIR/last_backup.txt"
-        log "OK" "desktopManager.js restored from backup: $BACKUP_PATH"
+    if [ -f "$ORIGINAL_BACKUP" ]; then
+        chmod 644 "$ORIGINAL_BACKUP"
+        cp "$ORIGINAL_BACKUP" "$DING_FILE"
+        log "OK" "desktopManager.js restored from original backup"
+
+    elif python3 /usr/share/right-click-file/patch-ding.py remove >> "$LOG_FILE" 2>&1; then
+        log "OK" "DING patch removed via patch-ding.py"
+
     else
-        log "WARN" "No backup found -- removing patch markers manually"
-        python3 /usr/share/right-click-file/patch-ding.py remove >> "$LOG_FILE" 2>&1 \
-            && log "OK" "DING patch removed" \
-            || log "WARN" "Could not remove DING patch -- check $LOG_FILE"
+        log "WARN" "Original backup missing and patch removal failed -- trying GitLab fallback"
+        DING_VERSION=""
+        if [ -f "$DING_META" ]; then
+            DING_VERSION=$(python3 -c "import json,sys; print(json.load(open('$DING_META')).get('version',''))" 2>/dev/null || true)
+        fi
+
+        FALLBACK_URL=""
+        if [ -n "$DING_VERSION" ]; then
+            FALLBACK_URL="$GITLAB_RAW/v${DING_VERSION}/app/desktopManager.js"
+            log "INFO" "Trying GitLab tag v${DING_VERSION}: $FALLBACK_URL"
+        else
+            FALLBACK_URL="$GITLAB_RAW/master/app/desktopManager.js"
+            log "WARN" "DING version unknown, falling back to master branch"
+        fi
+
+        TMP_FILE=$(mktemp)
+        if curl -fsSL --max-time 15 "$FALLBACK_URL" -o "$TMP_FILE" 2>/dev/null; then
+
+            if grep -q "_prepareMenu" "$TMP_FILE"; then
+                cp "$TMP_FILE" "$DING_FILE"
+                log "OK" "desktopManager.js restored from GitLab ($FALLBACK_URL)"
+            else
+                log "WARN" "GitLab file looks invalid (missing _prepareMenu) -- skipping"
+            fi
+        else
+            log "WARN" "GitLab download failed (no network or tag not found)"
+            log "WARN" "desktopManager.js could NOT be restored -- manual fix required"
+            log "WARN" "Run: sudo apt reinstall ding-gnome-shell-extension"
+        fi
+        rm -f "$TMP_FILE"
     fi
 fi
+
+rm -f "$STATE_DIR/ding.sha256"
+rm -f "$ORIGINAL_BACKUP"
+rm -rf "$BACKUP_DIR"
+rmdir "$STATE_DIR" 2>/dev/null || true
+log "OK" "State directory cleaned: $STATE_DIR"
 
 rm -f "$LOG_DIR/installed_files.txt"
 log "OK" "Pre-removal complete"
 log "INFO" "A reboot is required to fully remove the desktop right-click entry"
-echo ""
-echo "  [INFO] A reboot is required for the desktop right-click entry to disappear."
-echo ""
 
 exit 0
