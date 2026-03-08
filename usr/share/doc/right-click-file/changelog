@@ -1,3 +1,15 @@
+right-click-file (1.2.0) stable; urgency=low
+
+  * create-file-here.sh: auto-increment filename when a file with the same
+    name already exists (untitled.txt -> untitled (2).txt -> untitled (3).txt).
+  * create-file-here.sh: pre-fill dialog with next available name.
+  * create-file-here.sh: silently increment if user manually types an
+    already existing name.
+  * create-file-here.sh: remove "File already exists, open anyway?" dialog.
+  * create-file-here.sh: fix operator precedence on folder fallback logic.
+
+ -- sypher93 <sypher93@proton.me>  Sun, 08 Mar 2026 00:00:00 +0000
+
 right-click-file (1.1.0) stable; urgency=low
 
   * apt hook: automatically re-apply the DING patch after a DING update.
