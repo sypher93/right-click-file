@@ -16,7 +16,7 @@ The feature adds:
 
 ## How it works
 
-<a href="https://ibb.co/yF4xB5vW"><img src="https://i.ibb.co/1Gz4JKy8/right-click-file-demo.gif" alt="right-click-file-demo" border="0"></a>
+https://github.com/user-attachments/assets/ae5164dc-32de-4059-9751-d6d9cd9f9447
 
 ---
 
