@@ -24,7 +24,7 @@ chmod 755 "$STATE_DIR" "$BACKUP_DIR"
 {
     echo ""
     echo "================================================================"
-    echo "  right-click-file v1.1.0 -- postinst $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "  right-click-file v1.2.0 -- postinst $(date '+%Y-%m-%d %H:%M:%S')"
     echo "================================================================"
 } >> "$LOG_FILE"
 
